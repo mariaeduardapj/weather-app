@@ -6,15 +6,15 @@ def get_weather():
     api_key = "198fe609b196b760c4b992bb486c1d0a"
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=pt_br"
 
-responde = requests.get(url)
-data = response.json()
+    response = requests.get(url)         
+    data = response.json()               
 
-if response.status_code == 200:
-    temp = data["main"]["temp"]
-    desc = data["weather"][0]["description"]
-    result_label.config(text=f"{city} - {temp}°C\n{desc.capitalize()}")
-else:
-    result_label.config(text="City not found.")
+    if response.status_code == 200:
+        temp = data["main"]["temp"]
+        desc = data["weather"][0]["description"]
+        result_label.config(text=f"{city} - {temp}°C\n{desc.capitalize()}")
+    else:
+        result_label.config(text="City not found.")
 
 root = tk.Tk()
 root.title("Current weather")
