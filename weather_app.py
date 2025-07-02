@@ -66,7 +66,14 @@ def get_weather():
         data = response.json()
         temp = data["main"]["temp"]
         desc = data["weather"][0]["description"]
-        result_label.config(text=f"{city} - {temp}°C\n{desc.capitalize()}")
+        temp_min = data["main"]["temp_min"]
+        temp_max = data["main"]["temp_max"]
+        feels_like = data["main"]["feels_like"]
+        humidity = data["main"]["humidity"]
+        result_label.config(text=f"""{city}
+{temp:.1f}°C (Feels like {feels_like:.1f}°C) 
+Min: {temp_min:.1f}°C | Max: {temp_max:.1f}°C
+Humidity: {humidity}%""")
     except requests.exceptions.ConnectionError:
         result_label.config(text="Connection Error. Check your internet.")
     except requests.exceptions.Timeout:
@@ -80,7 +87,7 @@ def get_weather():
 
 root = tk.Tk()
 root.title("Weather App 🌦️")
-root.geometry("400x350")
+root.geometry("400x400")
 root.configure(bg="#ffe6f0")
 
 gif_file="C:\\Users\\duda2\\Estudos\\Projetos\\weather-app\\midias\\f.gif"
