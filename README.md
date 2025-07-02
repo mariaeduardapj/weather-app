@@ -15,6 +15,10 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ---
 
+## 📷 Screenshot
+
+![alt text](image.png) ![alt text](image-1.png)
+
 ## 🚀 How to Run the Project
 
 1. Clone the repository:

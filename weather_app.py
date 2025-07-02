@@ -58,7 +58,7 @@ def get_weather():
         result_label.config(text="Please, enter a city.")
         return
 
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=pt_br"
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=en"
 
     try:
         response = requests.get(url)   
@@ -83,7 +83,7 @@ root.title("Weather App 🌦️")
 root.geometry("400x350")
 root.configure(bg="#ffe6f0")
 
-gif_file="C:\\Users\\duda2\\Estudos\\Projetos\\weather-app\\f.gif"
+gif_file="C:\\Users\\duda2\\Estudos\\Projetos\\weather-app\\midias\\f.gif"
 if load_gif(gif_file):
     gif_label=tk.Label(root,bg="#ffe6f0")
     gif_label.pack(pady=10)
