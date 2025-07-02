@@ -17,7 +17,8 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ## 📷 Screenshot
 
-![alt text](image.png) ![alt text](image-1.png)
+![Main screen](midias/main-screen.png)
+![Result screen](midias/result-screen.png)
 
 ## 🚀 How to Run the Project
 
