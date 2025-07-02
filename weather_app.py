@@ -39,6 +39,15 @@ def load_gif(file_path):
     gif_delay=image.info.get('duration',100)
     return True
 
+def on_entry_focus_in(event):
+    if city_entry.get()=="Enter a city":
+        city_entry.delete(0,tk.END)
+        city_entry.config(fg="black")
+def on_entry_focus_out(event):
+    if not city_entry.get():
+        city_entry.insert(0, "Enter a city")
+        city_entry.config(fg="gray")
+
 def get_weather():
     city = city_entry.get()
     api_key = os.getenv("API_KEY")
@@ -85,6 +94,11 @@ else:
 
 city_entry = tk.Entry(root, font=("Arial", 14), bg="#ffffff")
 city_entry.pack(pady=15)
+
+city_entry.insert(0, "Enter a city")
+city_entry.config(fg="gray")
+city_entry.bind("<FocusIn>", on_entry_focus_in)
+city_entry.bind("<FocusOut>", on_entry_focus_out)
 
 btn = tk.Button(
     root,
