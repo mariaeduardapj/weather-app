@@ -24,26 +24,21 @@ WEATHER_GIFS = {
     "sand": "assets/mist.gif",
     "ash": "assets/mist.gif",
     "squall": "assets/mist.gif",
-    "tornado": "assets/tornado.gif", 
+    "tornado": "assets/tornado.gif"
 }
+
+gif_frames_cache = {}
+gif_animation_jobs = {}
+current_theme_path = {"value": "themes/pink-theme.json"}
 
 def load_gif_frame(path, frame_index, size=(100, 100)):
     try:
         img = Image.open(path)
-        img.seek(frame_index) # Vai para o frame específico do GIF
-        img = img.resize(size, Image.LANCZOS) # Redimensiona a imagem
+        img.seek(frame_index)
+        img = img.resize(size, Image.LANCZOS)
         return ImageTk.PhotoImage(img)
-    except EOFError: # Acontece quando o GIF termina de ser lido
+    except:
         return None
-    except FileNotFoundError:
-        print(f"Erro: Arquivo GIF não encontrado em {path}")
-        return None
-    except Exception as e:
-        print(f"Erro ao carregar frame do GIF: {e}")
-        return None
-    
-gif_frames_cache = {}
-gif_animation_jobs = {} 
 
 def animate_gif(label, gif_path, frame_index=0):
     if gif_path not in gif_frames_cache:
@@ -54,18 +49,19 @@ def animate_gif(label, gif_path, frame_index=0):
                 frames.append(ImageTk.PhotoImage(img.resize((100, 100), Image.LANCZOS)))
                 img.seek(img.tell() + 1)
         except EOFError:
-            pass 
+            pass
         gif_frames_cache[gif_path] = frames
-    
+
     frames = gif_frames_cache[gif_path]
-    if not frames: return
+    if not frames:
+        return
 
     frame = frames[frame_index]
     label.configure(image=frame)
-    label.image = frame 
+    label.image = frame
 
     next_frame_index = (frame_index + 1) % len(frames)
-    
+
     if gif_animation_jobs.get(label):
         app.after_cancel(gif_animation_jobs[label])
 
@@ -80,10 +76,9 @@ def get_weather():
     response = requests.get(url)
     data = response.json()
 
-    for label in [weather_gif_label]: # ou outros labels que possam ter GIFs
-        if gif_animation_jobs.get(label):
-            app.after_cancel(gif_animation_jobs[label])
-            gif_animation_jobs[label] = None
+    if gif_animation_jobs.get(weather_gif_label):
+        app.after_cancel(gif_animation_jobs[weather_gif_label])
+        gif_animation_jobs[weather_gif_label] = None
 
     if response.status_code == 200:
         temp = data["main"]["temp"]
@@ -106,8 +101,6 @@ def get_weather():
         else:
             weather_gif_label.configure(image=None)
             weather_gif_label.image = None
-            print(f"Not found GIF for: {desc} in way: {gif_path}")
-
     else:
         city_label.configure(text="")
         temp_label.configure(text="")
@@ -118,39 +111,67 @@ def get_weather():
         weather_gif_label.configure(image=None)
         weather_gif_label.image = None
 
+def toggle_theme():
+    if "pink" in current_theme_path["value"]:
+        current_theme_path["value"] = "themes/dark-theme.json"
+    else:
+        current_theme_path["value"] = "themes/pink-theme.json"
+
+    ctk.set_default_color_theme(current_theme_path["value"])
+    rebuild_ui()
+
+def rebuild_ui():
+    global city_entry, search_button, weather_gif_label
+    global city_label, temp_label, desc_label
+    global feel_label, humidity_label, max_min_label
+    global toggle_btn
+
+    for widget in app.winfo_children():
+        widget.destroy()
+
+    city_entry = ctk.CTkEntry(app, placeholder_text="Enter city", width=250, font=("Tahoma", 14))
+    city_entry.pack(pady=10)
+
+    search_button = ctk.CTkButton(app, text="Search Weather", command=get_weather, font=("Tahoma", 14))
+    search_button.pack(pady=0)
+
+    toggle_btn = ctk.CTkButton(app, text="🌙" if "pink" in current_theme_path["value"] else "☀️", width=30, command=toggle_theme)
+    toggle_btn.place(x=310, y=10)
+
+    info_frame = ctk.CTkFrame(app)
+    info_frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+    weather_gif_label = ctk.CTkLabel(info_frame, text="")
+    weather_gif_label.pack(side="left", padx=(0, 15), anchor="n")
+
+    text_info_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
+    text_info_frame.pack(side="left", fill="x", expand=True)
+
+    temp_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 48, "bold"))
+    temp_label.pack(pady=(0, 0), anchor='w')
+
+    desc_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left")
+    desc_label.pack(pady=(0, 0), anchor='w')
+
+    city_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 22, "bold"), justify="left")
+    city_label.pack(pady=(10, 0), anchor='w')
+
+    feel_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 18), justify="left")
+    feel_label.pack(pady=(0, 0), anchor='w')
+
+    humidity_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left")
+    humidity_label.pack(pady=(0, 0), anchor='w')
+
+    max_min_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left")
+    max_min_label.pack(pady=(0, 0), anchor='w')
 
 ctk.set_appearance_mode("light")
-ctk.set_default_color_theme("themes/pink-theme.json") 
+ctk.set_default_color_theme(current_theme_path["value"])
 
-app = ctk.CTk() 
+app = ctk.CTk()
 app.geometry("350x350")
 app.title("Weather App ☁️")
 app.resizable(False, False)
 
-
-city_entry = ctk.CTkEntry(app, placeholder_text="Enter city", width=250, font=("Tahoma", 14))
-city_entry.pack(pady=10)
-
-search_button = ctk.CTkButton(app, text="Search Weather", command=get_weather, font=("Tahoma", 14))
-search_button.pack(pady=0)
-
-info_frame = ctk.CTkFrame(app, fg_color="transparent")
-info_frame.pack(pady=20, padx=20, fill="both", expand=True)
-
-weather_gif_label = ctk.CTkLabel(info_frame, text="") 
-weather_gif_label.pack(side="left", padx=(0, 15), anchor="n") 
-text_info_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
-text_info_frame.pack(side="left", fill="x", expand=True)
-temp_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 48, "bold"), text_color="#FF4500")
-temp_label.pack(pady=(0, 0), anchor='w')
-desc_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left")
-desc_label.pack(pady=(0, 0), anchor='w') 
-city_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 22, "bold"), justify="left")
-city_label.pack(pady=(10, 0), anchor='w') 
-feel_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 18), text_color="#696969", justify="left")
-feel_label.pack(pady=(0, 0), anchor='w')
-humidity_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left")
-humidity_label.pack(pady=(0, 0), anchor='w')
-max_min_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left")
-max_min_label.pack(pady=(0, 0), anchor='w')
+rebuild_ui()
 app.mainloop()
