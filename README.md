@@ -5,10 +5,10 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ---
 
-## 🧰 Technologies Used
+## 🧰 Technologies Usedp
 
 - [Python 3.10+](https://www.python.org/)
-- [Tkinter](https://docs.python.org/3/library/tkinter.html) – GUI
+- [CustomTkinter](https://customtkinter.tomschimansky.com/) – GUI
 - [Requests](https://pypi.org/project/requests/) – HTTP requests
 - [python-dotenv](https://pypi.org/project/python-dotenv/) – Environment variable loader
 - [OpenWeatherMap API](https://openweathermap.org/api)
