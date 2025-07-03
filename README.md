@@ -17,8 +17,7 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ## 📷 Screenshot
 
-![Main screen](midias/main-screen.png)
-![Result screen](midias/result-screen.png)
+<img src="midias/preview.gif" width="350"/>
 
 ## 🚀 How to Run the Project
 
@@ -65,6 +64,8 @@ weather-app/
 ├── themes/
 │   └── pink-theme.json
 │   └── dark-theme.json
+├── midias/
+│   └── preview.gif
 ├── .env
 ├── weather_app.py
 ├── README.md
