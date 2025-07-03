@@ -26,15 +26,15 @@
     "corner_radius": 0
   },
   "CTkFrame": {
-    "fg_color": ["transparent", "transparent"],
-    "border_color": ["transparent", "transparent"],
+    "fg_color": "#ffe6f0",
+    "border_color": "#ff99cc",
     "border_width": 0,
     "corner_radius": 0
   },
-  "CTkFont": {  
-    "family": "Roboto",  
-    "size": 13,          
-    "weight": "normal",  
+  "CTkFont": {
+    "family": "Roboto",
+    "size": 13,
+    "weight": "normal",
     "mac_os": {
       "family": "Roboto",
       "size": 13,
