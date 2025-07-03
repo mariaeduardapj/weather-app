@@ -24,5 +24,31 @@
     "text_color": "#d63384",
     "fg_color": ["transparent", "transparent"],
     "corner_radius": 0
+  },
+  "CTkFrame": {
+    "fg_color": ["transparent", "transparent"],
+    "border_color": ["transparent", "transparent"],
+    "border_width": 0,
+    "corner_radius": 0
+  },
+  "CTkFont": {  
+    "family": "Roboto",  
+    "size": 13,          
+    "weight": "normal",  
+    "mac_os": {
+      "family": "Roboto",
+      "size": 13,
+      "weight": "normal"
+    },
+    "windows": {
+      "family": "Roboto",
+      "size": 13,
+      "weight": "normal"
+    },
+    "linux": {
+      "family": "Roboto",
+      "size": 13,
+      "weight": "normal"
+    }
   }
 }
