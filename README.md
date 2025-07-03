@@ -57,6 +57,7 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ## 📁 Project Structure
 
+```bash
 weather-app/
 ├── assets/
 │   ├── clear.gif
