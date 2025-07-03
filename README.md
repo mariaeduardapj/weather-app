@@ -56,6 +56,22 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ---
 
+## 📁 Project Structure
+
+weather-app/
+├── assets/
+│   ├── clear.gif
+│   └── ...
+├── themes/
+│   └── pink-theme.json
+│   └── dark-theme.json
+├── .env
+├── weather_app.py
+├── README.md
+└── requirements.txt
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.
