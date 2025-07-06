@@ -48,7 +48,6 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ## ✨ Possible Improvements
 
-- Show weather icons
 - Improve layout with grid() or ttk
 - Add multi-day forecast (3 or 5 days)
 - Web version with Streamlit
