@@ -1,6 +1,7 @@
 import customtkinter as ctk
 import requests
 import os
+from tkinter import END
 from dotenv import load_dotenv
 from PIL import Image, ImageTk
 
@@ -68,8 +69,25 @@ def animate_gif(label, gif_path, frame_index=0):
     job_id = app.after(100, animate_gif, label, gif_path, next_frame_index)
     gif_animation_jobs[label] = job_id
 
+def get_city():
+    api_token = os.getenv("API_TOKEN")
+    url = f'https://ipinfo.io/json?token={api_token}'
+    
+    response = requests.get(url)
+    data = response.json()
+
+    return data.get('city')
+
+
 def get_weather():
-    city = city_entry.get()
+    city = city_entry.get().strip()
+    if not city:
+        city = get_city()
+        if city:
+            city_entry.delete(0,END)
+            city_entry.insert(0,city)
+        else:
+            desc_label.configure(text="Could not detect city.")
     api_key = os.getenv("API_KEY")
     url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=en"
 
@@ -83,13 +101,14 @@ def get_weather():
     if response.status_code == 200:
         temp = data["main"]["temp"]
         desc = data["weather"][0]["description"]
+        desc_display = desc.capitalize()
         feels = data["main"]["feels_like"]
         temp_min = data["main"]["temp_min"]
         temp_max = data["main"]["temp_max"]
         humidity = data["main"]["humidity"]
 
         temp_label.configure(text=f"{temp:.1f}°C")
-        desc_label.configure(text=f"{desc}")
+        desc_label.configure(text=f"{desc_display}")
         city_label.configure(text=f"{city} 📍")
         feel_label.configure(text=f"Feels like {feels:.1f}°C")
         humidity_label.configure(text=f"Humidity: {humidity}%")
@@ -174,4 +193,5 @@ app.title("Weather App ☁️")
 app.resizable(False, False)
 
 rebuild_ui()
+get_weather()
 app.mainloop()
