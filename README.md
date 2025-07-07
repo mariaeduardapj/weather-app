@@ -42,6 +42,7 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 - Get current weather by typing a city name
 - Display temperature (°C) and weather description 
 - Multi-day forecast (3 days)
+- History of searched cities
 - Lightweight desktop GUI using Tkinter
 - API key protection via .env file
 
@@ -58,9 +59,6 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 ```bash
 weather-app/
-├── assets/
-│   ├── clear.gif
-│   └── ...
 ├── themes/
 │   └── pink-theme.json
 │   └── dark-theme.json
