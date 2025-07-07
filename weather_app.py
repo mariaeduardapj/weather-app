@@ -113,9 +113,9 @@ def get_weather():
             weekday = date.strftime("%A")
 
             row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
-            row_frame.pack(fill="x", padx=20, pady=2)
+            row_frame.pack(fill="x", padx=30, pady=1)
 
-            label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12), width=110, anchor="w")
+            label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12, "bold"), width=150, anchor="w")
             label_day.pack(side="left")
 
             label_temp = ctk.CTkLabel(row_frame, text=f"{temp_day:.0f}°C", font=("Tahoma", 12), width=40, anchor="center")
@@ -182,13 +182,13 @@ def rebuild_ui():
     max_min_label.pack(pady=(0, 0), anchor='w')
 
     forecast_frame = ctk.CTkFrame(app, fg_color="transparent")
-    forecast_frame.pack(pady=(5, 10), fill="x")
+    forecast_frame.pack(pady=(1, 10), fill="x")
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme(current_theme_path["value"])
 
 app = ctk.CTk()
-app.geometry("350x500")
+app.geometry("350x450")
 app.title("Weather App ☁️")
 app.resizable(False, False)
 
