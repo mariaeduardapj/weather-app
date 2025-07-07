@@ -41,6 +41,7 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 
 - Get current weather by typing a city name
 - Display temperature (°C) and weather description 
+- Multi-day forecast (3 days)
 - Lightweight desktop GUI using Tkinter
 - API key protection via .env file
 
@@ -49,7 +50,6 @@ It connects to the [OpenWeatherMap API](https://openweathermap.org/) to show the
 ## ✨ Possible Improvements
 
 - Improve layout with grid() or ttk
-- Add multi-day forecast (3 or 5 days)
 - Web version with Streamlit
 
 ---
