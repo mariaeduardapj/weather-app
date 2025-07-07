@@ -11,6 +11,7 @@ load_dotenv()
 
 current_theme_path = {"value": "themes/pink-theme.json"}
 forecast_rows = []
+search_history = []
 forecast_frame = None
 
 def get_city():
@@ -22,6 +23,37 @@ def get_city():
         return data.get('city')
     except:
         return None
+    
+def update_search_history(city):
+    if not city or city in search_history:
+        return
+    search_history.insert(0, city)
+    if len(search_history) > 5:
+        search_history.pop()
+
+    for label in history_labels:
+        label.destroy()
+    history_labels.clear()
+
+    for city_name in search_history:
+        label = ctk.CTkButton(
+            history_frame,
+            text=city_name,
+            font=("Tahoma", 12),
+            width=1,
+            corner_radius=10,
+            fg_color="#e0e0e0",
+            text_color="#333",
+            hover_color="#d0d0d0",
+            command=lambda c=city_name: on_history_click(c)
+        )
+        label.pack(side="left", padx=5)
+        history_labels.append(label)
+
+def on_history_click(city_name):
+    city_entry.delete(0, END)
+    city_entry.insert(0, city_name)
+    get_weather()
 
 def get_weather():
     city = city_entry.get().strip()
@@ -127,6 +159,8 @@ def get_weather():
             forecast_rows.append(row_frame)
             count += 1
 
+    update_search_history(city)
+
 def toggle_theme():
     if "pink" in current_theme_path["value"]:
         current_theme_path["value"] = "themes/dark-theme.json"
@@ -141,6 +175,9 @@ def rebuild_ui():
     global city_label, temp_label, desc_label
     global feel_label, humidity_label, max_min_label
     global toggle_btn, forecast_frame
+    global history_frame, history_labels
+    history_labels = []
+
 
     for widget in app.winfo_children():
         widget.destroy()
@@ -153,6 +190,9 @@ def rebuild_ui():
 
     toggle_btn = ctk.CTkButton(app, text="🌙" if "pink" in current_theme_path["value"] else "☀️", width=30, command=toggle_theme)
     toggle_btn.place(x=310, y=10)
+
+    history_frame = ctk.CTkFrame(app, fg_color="transparent")
+    history_frame.pack(pady=(5, 0), padx=10, fill="x")
 
     info_frame = ctk.CTkFrame(app)
     info_frame.pack(pady=20, padx=20, fill="x")
@@ -188,7 +228,7 @@ ctk.set_appearance_mode("light")
 ctk.set_default_color_theme(current_theme_path["value"])
 
 app = ctk.CTk()
-app.geometry("350x450")
+app.geometry("350x500")
 app.title("Weather App ☁️")
 app.resizable(False, False)
 
