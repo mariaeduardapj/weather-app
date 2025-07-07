@@ -33,7 +33,7 @@ gif_frames_cache = {}
 gif_animation_jobs = {}
 current_theme_path = {"value": "themes/pink-theme.json"}
 
-forecast_labels = []
+forecast_rows = []
 forecast_frame = None
 
 def load_gif_frame(path, frame_index, size=(100, 100)):
@@ -137,10 +137,10 @@ def get_weather():
         weather_gif_label.configure(image=None)
         weather_gif_label.image = None
 
-    # Previsão
-    for label in forecast_labels:
-        label.destroy()
-    forecast_labels.clear()
+    for row in forecast_rows:
+        row.destroy()
+    forecast_rows.clear()
+
 
     forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric&lang=en"
     try:
@@ -173,7 +173,6 @@ def get_weather():
                 desc_day = item['weather'][0]['description'].capitalize()
                 weekday = date.strftime("%A")
 
-                # Linha da "tabela"
                 row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
                 row_frame.pack(fill="x", padx=10, pady=2)
 
@@ -186,9 +185,8 @@ def get_weather():
                 label_desc = ctk.CTkLabel(row_frame, text=f"|  {desc_day}", font=("Tahoma", 12), anchor="w")
                 label_desc.pack(side="left")
 
-                forecast_labels.append(label_day)
-                forecast_labels.append(label_temp)
-                forecast_labels.append(label_desc)
+                forecast_rows.append(row_frame)
+
 
                 count += 1
 
