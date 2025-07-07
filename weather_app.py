@@ -5,73 +5,13 @@ from tkinter import END
 from dotenv import load_dotenv
 from PIL import Image, ImageTk
 from datetime import datetime
+from io import BytesIO
 
 load_dotenv()
 
-WEATHER_GIFS = {
-    "clear sky": "assets/clear.gif",
-    "few clouds": "assets/clouds.gif",
-    "scattered clouds": "assets/clouds.gif",
-    "broken clouds": "assets/clouds.gif",
-    "overcast clouds": "assets/clouds.gif",
-    "shower rain": "assets/rain.gif",
-    "rain": "assets/rain.gif",
-    "thunderstorm": "assets/thunderstorm.gif",
-    "snow": "assets/snow.gif",
-    "mist": "assets/mist.gif",
-    "smoke": "assets/mist.gif",
-    "haze": "assets/mist.gif",
-    "dust": "assets/mist.gif",
-    "fog": "assets/mist.gif",
-    "sand": "assets/mist.gif",
-    "ash": "assets/mist.gif",
-    "squall": "assets/mist.gif",
-    "tornado": "assets/tornado.gif"
-}
-
-gif_frames_cache = {}
-gif_animation_jobs = {}
 current_theme_path = {"value": "themes/pink-theme.json"}
-
 forecast_rows = []
 forecast_frame = None
-
-def load_gif_frame(path, frame_index, size=(100, 100)):
-    try:
-        img = Image.open(path)
-        img.seek(frame_index)
-        img = img.resize(size, Image.LANCZOS)
-        return ImageTk.PhotoImage(img)
-    except:
-        return None
-
-def animate_gif(label, gif_path, frame_index=0):
-    if gif_path not in gif_frames_cache:
-        frames = []
-        img = Image.open(gif_path)
-        try:
-            while True:
-                frames.append(ImageTk.PhotoImage(img.resize((100, 100), Image.LANCZOS)))
-                img.seek(img.tell() + 1)
-        except EOFError:
-            pass
-        gif_frames_cache[gif_path] = frames
-
-    frames = gif_frames_cache[gif_path]
-    if not frames:
-        return
-
-    frame = frames[frame_index]
-    label.configure(image=frame)
-    label.image = frame
-
-    next_frame_index = (frame_index + 1) % len(frames)
-
-    if gif_animation_jobs.get(label):
-        app.after_cancel(gif_animation_jobs[label])
-
-    job_id = app.after(100, animate_gif, label, gif_path, next_frame_index)
-    gif_animation_jobs[label] = job_id
 
 def get_city():
     api_token = os.getenv("API_TOKEN")
@@ -100,11 +40,6 @@ def get_weather():
     response = requests.get(url)
     data = response.json()
 
-    # Parar animação anterior
-    if gif_animation_jobs.get(weather_gif_label):
-        app.after_cancel(gif_animation_jobs[weather_gif_label])
-        gif_animation_jobs[weather_gif_label] = None
-
     if response.status_code == 200:
         temp = data["main"]["temp"]
         desc = data["weather"][0]["description"]
@@ -121,10 +56,15 @@ def get_weather():
         humidity_label.configure(text=f"Humidity: {humidity}%")
         max_min_label.configure(text=f"Min: {temp_min}°C | Max: {temp_max}°C")
 
-        gif_path = WEATHER_GIFS.get(desc, "assets/default.gif")
-        if os.path.exists(gif_path):
-            animate_gif(weather_gif_label, gif_path)
-        else:
+        icon_code = data["weather"][0]["icon"]
+        icon_url = f"http://openweathermap.org/img/wn/{icon_code}@2x.png"
+        try:
+            icon_response = requests.get(icon_url)
+            icon_img = Image.open(BytesIO(icon_response.content)).resize((100, 100))
+            icon_tk = ImageTk.PhotoImage(icon_img)
+            weather_gif_label.configure(image=icon_tk)
+            weather_gif_label.image = icon_tk
+        except:
             weather_gif_label.configure(image=None)
             weather_gif_label.image = None
     else:
@@ -141,7 +81,6 @@ def get_weather():
         row.destroy()
     forecast_rows.clear()
 
-
     forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric&lang=en"
     try:
         forecast_response = requests.get(forecast_url)
@@ -151,45 +90,42 @@ def get_weather():
         forecast_data = None
 
     if forecast_data and forecast_data.get("cod") == "200":
-            daily_forecasts = {}
-            for item in forecast_data['list']:
-                dt_txt = item['dt_txt']
-                try:
-                    date = datetime.fromisoformat(dt_txt).date()
-                except ValueError:
-                    continue
-                if date not in daily_forecasts:
-                    daily_forecasts[date] = item
+        daily_forecasts = {}
+        for item in forecast_data['list']:
+            dt_txt = item['dt_txt']
+            try:
+                date = datetime.fromisoformat(dt_txt).date()
+            except ValueError:
+                continue
+            if date not in daily_forecasts:
+                daily_forecasts[date] = item
 
-            sorted_dates = sorted(daily_forecasts.keys())
-            count = 0
-            for date in sorted_dates:
-                if date == datetime.now().date():
-                    continue
-                if count >= 3:
-                    break
-                item = daily_forecasts[date]
-                temp_day = item['main']['temp']
-                desc_day = item['weather'][0]['description'].capitalize()
-                weekday = date.strftime("%A")
+        sorted_dates = sorted(daily_forecasts.keys())
+        count = 0
+        for date in sorted_dates:
+            if date == datetime.now().date():
+                continue
+            if count >= 3:
+                break
+            item = daily_forecasts[date]
+            temp_day = item['main']['temp']
+            desc_day = item['weather'][0]['description'].capitalize()
+            weekday = date.strftime("%A")
 
-                row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
-                row_frame.pack(fill="x", padx=10, pady=2)
+            row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
+            row_frame.pack(fill="x", padx=20, pady=2)
 
-                label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12, "bold"), width=100, anchor="w")
-                label_day.pack(side="left")
+            label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12), width=110, anchor="w")
+            label_day.pack(side="left")
 
-                label_temp = ctk.CTkLabel(row_frame, text=f"{temp_day:.0f}°C", font=("Tahoma", 12), width=40, anchor="w")
-                label_temp.pack(side="left")
+            label_temp = ctk.CTkLabel(row_frame, text=f"{temp_day:.0f}°C", font=("Tahoma", 12), width=40, anchor="center")
+            label_temp.pack(side="left")
 
-                label_desc = ctk.CTkLabel(row_frame, text=f"|  {desc_day}", font=("Tahoma", 12), anchor="w")
-                label_desc.pack(side="left")
+            label_desc = ctk.CTkLabel(row_frame, text=f"|  {desc_day}", font=("Tahoma", 12), anchor="w")
+            label_desc.pack(side="left")
 
-                forecast_rows.append(row_frame)
-
-
-                count += 1
-
+            forecast_rows.append(row_frame)
+            count += 1
 
 def toggle_theme():
     if "pink" in current_theme_path["value"]:
@@ -246,14 +182,13 @@ def rebuild_ui():
     max_min_label.pack(pady=(0, 0), anchor='w')
 
     forecast_frame = ctk.CTkFrame(app, fg_color="transparent")
-    forecast_frame.pack(pady=1, padx=50, fill="x")
-
+    forecast_frame.pack(pady=(5, 10), fill="x")
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme(current_theme_path["value"])
 
 app = ctk.CTk()
-app.geometry("350x450")
+app.geometry("350x500")
 app.title("Weather App ☁️")
 app.resizable(False, False)
 
