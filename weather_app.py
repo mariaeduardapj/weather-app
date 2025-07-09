@@ -221,28 +221,19 @@ def rebuild_ui():
     app.grid_rowconfigure(0, weight=1)
 
     scrollable_container = ctk.CTkScrollableFrame(app, fg_color="transparent")
-    scrollable_container.grid(row=0, column=0, padx=10, pady=10, sticky="nswe")
-    scrollable_container.grid_columnconfigure(0, weight=1) 
-    scrollable_container.grid_rowconfigure(0, weight=1) 
+    scrollable_container.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+    scrollable_container.grid_columnconfigure(0, weight=1)
 
     main_content_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")
-    main_content_frame.grid(row=0, column=0, sticky="nsew") 
-    main_content_frame.grid_columnconfigure(0, weight=1) 
-    main_content_frame.grid_rowconfigure(0, weight=1) 
-    main_content_frame.grid_rowconfigure(1, weight=0)
-    main_content_frame.grid_rowconfigure(2, weight=1)
-    main_content_frame.grid_rowconfigure(3, weight=1)
+    main_content_frame.grid(row=0, column=0, sticky="n")
+    main_content_frame.grid_columnconfigure(0, weight=1)
 
-    fixed_content_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
-    fixed_content_frame.grid(row=1, column=0, sticky="ew") 
-    fixed_content_frame.grid_columnconfigure(0, weight=1) 
-
-    top_frame = ctk.CTkFrame(fixed_content_frame, fg_color="transparent") 
-    top_frame.pack(pady=10, padx=10, fill="x") 
+    top_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
+    top_frame.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="ew")
     top_frame.grid_columnconfigure(0, weight=1)
 
     city_entry = ctk.CTkEntry(top_frame, placeholder_text="Enter city", font=("Tahoma", 14))
-    city_entry.grid(row=0, column=0, padx=(0, 5), sticky="ew")
+    city_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
 
     search_button = ctk.CTkButton(top_frame, text="🔍", width=50, command=get_weather)
     search_button.grid(row=0, column=1, padx=(0, 5))
@@ -255,47 +246,41 @@ def rebuild_ui():
     )
     toggle_btn.grid(row=0, column=2)
 
-    history_frame = ctk.CTkFrame(fixed_content_frame, fg_color="transparent") 
-    history_frame.pack(pady=(5, 10), padx=10, fill="x") 
+    history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
+    history_frame.grid(row=1, column=0, padx=10, pady=(5, 10), sticky="ew")
 
-    info_frame = ctk.CTkFrame(fixed_content_frame) 
-    info_frame.pack(pady=10, padx=10, fill="both", expand=True) 
-    info_frame.grid_columnconfigure(0, weight=0)
+    info_frame = ctk.CTkFrame(main_content_frame) 
+    info_frame.grid(row=2, column=0, padx=10, pady=(0, 10), sticky="nsew")
     info_frame.grid_columnconfigure(1, weight=1)
-    info_frame.grid_rowconfigure(0, weight=1)
 
     weather_gif_label = ctk.CTkLabel(info_frame, text="")
-    weather_gif_label.grid(row=0, column=0, padx=(0, 15), pady=0, sticky="nw")
+    weather_gif_label.grid(row=0, column=0, padx=(0, 15), sticky="n")
 
     text_info_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
-    text_info_frame.grid(row=0, column=1, padx=0, pady=0, sticky="nsew")
-    text_info_frame.grid_rowconfigure(0, weight=1)
-    text_info_frame.grid_rowconfigure(1, weight=1)
-    text_info_frame.grid_rowconfigure(2, weight=1)
-    text_info_frame.grid_rowconfigure(3, weight=1)
-    text_info_frame.grid_rowconfigure(4, weight=1)
-    text_info_frame.grid_rowconfigure(5, weight=1)
+    text_info_frame.grid(row=0, column=1, sticky="nsew")
+    for i in range(6):
+        text_info_frame.grid_rowconfigure(i, weight=1)
 
-    temp_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 48, "bold"), anchor='w')
-    temp_label.pack(pady=(0, 0), fill="x", expand=True)
+    temp_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 48, "bold"), anchor="w")
+    temp_label.grid(row=0, column=0, sticky="w")
 
-    desc_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left", anchor='w')
-    desc_label.pack(pady=(0, 0), fill="x", expand=True)
+    desc_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), anchor="w")
+    desc_label.grid(row=1, column=0, sticky="w")
 
-    city_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 22, "bold"), justify="left", anchor='w')
-    city_label.pack(pady=(10, 0), fill="x", expand=True)
+    city_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 22, "bold"), anchor="w")
+    city_label.grid(row=2, column=0, sticky="w")
 
-    feel_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 18), justify="left", anchor='w')
-    feel_label.pack(pady=(0, 0), fill="x", expand=True)
+    feel_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 18), anchor="w")
+    feel_label.grid(row=3, column=0, sticky="w")
 
-    humidity_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left", anchor='w')
-    humidity_label.pack(pady=(0, 0), fill="x", expand=True)
+    humidity_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), anchor="w")
+    humidity_label.grid(row=4, column=0, sticky="w")
 
-    max_min_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), justify="left", anchor='w')
-    max_min_label.pack(pady=(0, 0), fill="x", expand=True)
+    max_min_label = ctk.CTkLabel(text_info_frame, text="", font=("Tahoma", 14), anchor="w")
+    max_min_label.grid(row=5, column=0, sticky="w")
 
-    forecast_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent") 
-    forecast_frame.grid(row=2, column=0, pady=(1, 10), padx=10, sticky="nsew") 
+    forecast_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
+    forecast_frame.grid(row=3, column=0, padx=10, pady=(10, 20), sticky="ew")
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme(current_theme_path["value"])
