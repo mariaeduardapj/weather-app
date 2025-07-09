@@ -223,8 +223,13 @@ def rebuild_ui():
     scrollable_container = ctk.CTkScrollableFrame(app, fg_color="transparent")
     scrollable_container.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
     scrollable_container.grid_columnconfigure(0, weight=1)
+    scrollable_container.grid_rowconfigure(0, weight=1)
 
-    main_content_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")
+    center_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")
+    center_frame.grid(row=0, column=0)
+    center_frame.grid_columnconfigure(0, weight=1)
+
+    main_content_frame = ctk.CTkFrame(center_frame, fg_color="transparent")
     main_content_frame.grid(row=0, column=0, sticky="n")
     main_content_frame.grid_columnconfigure(0, weight=1)
 
@@ -249,7 +254,7 @@ def rebuild_ui():
     history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
     history_frame.grid(row=1, column=0, padx=10, pady=(5, 10), sticky="ew")
 
-    info_frame = ctk.CTkFrame(main_content_frame) 
+    info_frame = ctk.CTkFrame(main_content_frame)
     info_frame.grid(row=2, column=0, padx=10, pady=(0, 10), sticky="nsew")
     info_frame.grid_columnconfigure(1, weight=1)
 
