@@ -26,7 +26,7 @@ forecast_frame = None
 history_frame = None
 history_labels = []
 scrollable_container = None
-app = None 
+app = None
 
 def get_city():
     api_token = os.getenv("API_TOKEN")
@@ -42,11 +42,11 @@ def get_city():
     except requests.exceptions.RequestException as e:
         print(f"Erro ao obter cidade por IP: {e}")
         return None
-    
+
 def update_search_history(city):
     if not city or city in search_history:
         return
-    
+
     search_history.insert(0, city)
     if len(search_history) > 5:
         search_history.pop()
@@ -55,6 +55,8 @@ def update_search_history(city):
         label.destroy()
     history_labels.clear()
 
+    text_color = "#ffffff" if "dark" in current_theme_path["value"] else "#d63384"
+
     for city_name in search_history:
         label = ctk.CTkButton(
             history_frame,
@@ -62,9 +64,7 @@ def update_search_history(city):
             font=("Tahoma", 12),
             width=1,
             corner_radius=10,
-            fg_color="#e0e0e0",
-            text_color="#333",
-            hover_color="#d0d0d0",
+            text_color=text_color,
             command=lambda c=city_name: on_history_click(c)
         )
         label.pack(side="left", padx=5)
@@ -124,25 +124,12 @@ def get_weather():
             if weather_gif_label:
                 weather_gif_label.configure(image=icon_tk)
                 weather_gif_label.image = icon_tk
-        except requests.exceptions.RequestException as e:
-            print(f"Erro ao carregar ícone: {e}")
-            if weather_gif_label: weather_gif_label.configure(image=None)
-            if weather_gif_label: weather_gif_label.image = None
-        except Exception as e:
-            print(f"Erro ao processar imagem do ícone: {e}")
+        except:
             if weather_gif_label: weather_gif_label.configure(image=None)
             if weather_gif_label: weather_gif_label.image = None
 
-    except requests.exceptions.RequestException as e:
-        print(f"Erro ao obter clima atual: {e}")
-        if city_label: city_label.configure(text="")
-        if temp_label: temp_label.configure(text="")
-        if feel_label: feel_label.configure(text="")
-        if max_min_label: max_min_label.configure(text="")
-        if humidity_label: humidity_label.configure(text="")
+    except:
         if desc_label: desc_label.configure(text="City not found or API error.")
-        if weather_gif_label: weather_gif_label.configure(image=None)
-        if weather_gif_label: weather_gif_label.image = None
 
     for row in forecast_rows:
         row.destroy()
@@ -153,8 +140,7 @@ def get_weather():
         forecast_response = requests.get(forecast_url)
         forecast_response.raise_for_status()
         forecast_data = forecast_response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Erro ao obter previsão: {e}")
+    except:
         forecast_data = None
 
     if forecast_data and forecast_data.get("cod") == "200" and forecast_frame:
@@ -194,7 +180,7 @@ def get_weather():
 
             forecast_rows.append(row_frame)
             count += 1
-    
+
     update_search_history(city)
 
 def toggle_theme():
@@ -220,18 +206,18 @@ def rebuild_ui():
     app.grid_columnconfigure(0, weight=1)
     app.grid_rowconfigure(0, weight=1)
 
-    scrollable_container = ctk.CTkScrollableFrame(app, fg_color="transparent")
-    scrollable_container.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
+    scrollable_container = ctk.CTkScrollableFrame(app)
+    scrollable_container.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")  
     scrollable_container.grid_columnconfigure(0, weight=1)
     scrollable_container.grid_rowconfigure(0, weight=1)
 
-    center_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")
-    center_frame.grid(row=0, column=0)
-    center_frame.grid_columnconfigure(0, weight=1)
-
-    main_content_frame = ctk.CTkFrame(center_frame, fg_color="transparent")
-    main_content_frame.grid(row=0, column=0, sticky="n")
+    main_content_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")  
+    main_content_frame.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)  
     main_content_frame.grid_columnconfigure(0, weight=1)
+    main_content_frame.grid_rowconfigure(0, weight=0) 
+    main_content_frame.grid_rowconfigure(1, weight=0)  
+    main_content_frame.grid_rowconfigure(2, weight=1) 
+    main_content_frame.grid_rowconfigure(3, weight=0) 
 
     top_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
     top_frame.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="ew")
@@ -243,16 +229,11 @@ def rebuild_ui():
     search_button = ctk.CTkButton(top_frame, text="🔍", width=50, command=get_weather)
     search_button.grid(row=0, column=1, padx=(0, 5))
 
-    toggle_btn = ctk.CTkButton(
-        top_frame,
-        text="🌙" if "pink" in current_theme_path["value"] else "☀️",
-        width=50,
-        command=toggle_theme
-    )
+    toggle_btn = ctk.CTkButton(top_frame, text="🌙" if "pink" in current_theme_path["value"] else "☀️", width=50, command=toggle_theme)
     toggle_btn.grid(row=0, column=2)
 
-    history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
-    history_frame.grid(row=1, column=0, padx=10, pady=(5, 10), sticky="ew")
+    history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent", height=30) 
+    history_frame.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
 
     info_frame = ctk.CTkFrame(main_content_frame)
     info_frame.grid(row=2, column=0, padx=10, pady=(0, 10), sticky="nsew")
@@ -285,7 +266,10 @@ def rebuild_ui():
     max_min_label.grid(row=5, column=0, sticky="w")
 
     forecast_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
-    forecast_frame.grid(row=3, column=0, padx=10, pady=(10, 20), sticky="ew")
+    forecast_frame.grid(row=3, column=0, padx=10, pady=(0, 20), sticky="ew")
+    
+    if search_history:
+        update_search_history(search_history[0])
 
 ctk.set_appearance_mode("light")
 ctk.set_default_color_theme(current_theme_path["value"])

@@ -40,10 +40,11 @@
     "text_color": ["#222222", "#ffffff"]
   },
   "CTkFrame": {
-    "fg_color": "#ffe6f0",
-    "border_color": "#ff99cc",
-    "border_width": 0,
-    "corner_radius": 0
+  "fg_color": ["#ffe6f0", "#ffe6f0"],
+  "top_fg_color": ["#ffe6f0", "#ffe6f0"],
+  "border_color": "#ff99cc",
+  "border_width": 0,
+  "corner_radius": 0
   },
   "CTkFont": {
     "family": "Roboto",
