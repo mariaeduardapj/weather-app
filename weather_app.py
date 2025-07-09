@@ -173,7 +173,7 @@ def get_weather():
         for date in sorted_dates:
             if date == datetime.now().date():
                 continue
-            if count >= 3:
+            if count >= 7:
                 break
             item = daily_forecasts[date]
             temp_day = item['main']['temp']
@@ -183,7 +183,7 @@ def get_weather():
             row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
             row_frame.pack(fill="x", padx=30, pady=1)
 
-            label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12, "bold"), width=150, anchor="w")
+            label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12, "bold"), width=90, anchor="w")
             label_day.pack(side="left")
 
             label_temp = ctk.CTkLabel(row_frame, text=f"{temp_day:.0f}°C", font=("Tahoma", 12), width=40, anchor="center")
