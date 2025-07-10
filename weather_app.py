@@ -203,47 +203,48 @@ def rebuild_ui():
     for widget in app.winfo_children():
         widget.destroy()
 
-    app.grid_columnconfigure(0, weight=1)
     app.grid_rowconfigure(0, weight=1)
+    app.grid_columnconfigure(0, weight=1)
 
     scrollable_container = ctk.CTkScrollableFrame(app)
-    scrollable_container.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")  
+    scrollable_container.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")
     scrollable_container.grid_columnconfigure(0, weight=1)
     scrollable_container.grid_rowconfigure(0, weight=1)
+    scrollable_container.grid_rowconfigure(1, weight=0)
+    scrollable_container.grid_rowconfigure(2, weight=1)
 
-    main_content_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")  
-    main_content_frame.grid(row=0, column=0, sticky="nsew", padx=0, pady=0)  
+    main_content_frame = ctk.CTkFrame(scrollable_container, fg_color="transparent")
+    main_content_frame.grid(row=1, column=0, sticky="n")
     main_content_frame.grid_columnconfigure(0, weight=1)
-    main_content_frame.grid_rowconfigure(0, weight=0) 
-    main_content_frame.grid_rowconfigure(1, weight=0)  
-    main_content_frame.grid_rowconfigure(2, weight=1) 
-    main_content_frame.grid_rowconfigure(3, weight=0) 
 
     top_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
     top_frame.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="ew")
-    top_frame.grid_columnconfigure(0, weight=1)
+    top_frame.grid_columnconfigure(0, weight=4)
+    top_frame.grid_columnconfigure(1, weight=1)
+    top_frame.grid_columnconfigure(2, weight=1)
 
     city_entry = ctk.CTkEntry(top_frame, placeholder_text="Enter city", font=("Tahoma", 14))
     city_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
 
-    search_button = ctk.CTkButton(top_frame, text="🔍", width=50, command=get_weather)
-    search_button.grid(row=0, column=1, padx=(0, 5))
+    search_button = ctk.CTkButton(top_frame, text="🔍", command=get_weather)
+    search_button.grid(row=0, column=1, sticky="ew", padx=(0, 5))
 
-    toggle_btn = ctk.CTkButton(top_frame, text="🌙" if "pink" in current_theme_path["value"] else "☀️", width=50, command=toggle_theme)
-    toggle_btn.grid(row=0, column=2)
+    toggle_btn = ctk.CTkButton(top_frame, text="🌙" if "pink" in current_theme_path["value"] else "☀️", command=toggle_theme)
+    toggle_btn.grid(row=0, column=2, sticky="ew")
 
-    history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent", height=30) 
+    history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent", height=30)
     history_frame.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
 
     info_frame = ctk.CTkFrame(main_content_frame)
     info_frame.grid(row=2, column=0, padx=10, pady=(0, 10), sticky="nsew")
-    info_frame.grid_columnconfigure(1, weight=1)
+    info_frame.grid_columnconfigure((0,1), weight=1)
 
     weather_gif_label = ctk.CTkLabel(info_frame, text="")
     weather_gif_label.grid(row=0, column=0, padx=(0, 15), sticky="n")
 
     text_info_frame = ctk.CTkFrame(info_frame, fg_color="transparent")
     text_info_frame.grid(row=0, column=1, sticky="nsew")
+    text_info_frame.grid_columnconfigure(0, weight=1)
     for i in range(6):
         text_info_frame.grid_rowconfigure(i, weight=1)
 
@@ -267,7 +268,7 @@ def rebuild_ui():
 
     forecast_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
     forecast_frame.grid(row=3, column=0, padx=10, pady=(0, 20), sticky="ew")
-    
+
     if search_history:
         update_search_history(search_history[0])
 
@@ -275,7 +276,7 @@ ctk.set_appearance_mode("light")
 ctk.set_default_color_theme(current_theme_path["value"])
 
 app = ctk.CTk()
-app.geometry("350x500")
+app.geometry("400x600")
 app.title("Weather App ☁️")
 app.resizable(True, True)
 
