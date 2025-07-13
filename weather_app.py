@@ -127,7 +127,8 @@ def get_weather():
         if desc_label: desc_label.configure(text=t("error_api"))
         return
 
-    current_weather_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=en"
+    lang = current_language["value"]
+    current_weather_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang={lang}"
     try:
         response = requests.get(current_weather_url)
         response.raise_for_status()
@@ -144,7 +145,7 @@ def get_weather():
         if temp_label: temp_label.configure(text=f"{temp:.1f}°C")
         if desc_label: desc_label.configure(text=f"{desc_display}")
         if city_label: city_label.configure(text=f"{city} 📍")
-        if feel_label: feel_label.configure(text=t("feels like", temp=feels))
+        if feel_label: feel_label.configure(text=t("feels_like", temp=feels))
         if humidity_label: humidity_label.configure(text=t("humidity", humidity=humidity))
         if max_min_label: max_min_label.configure(text=t("min_max", min=temp_min, max=temp_max))
 
@@ -169,7 +170,7 @@ def get_weather():
         row.destroy()
     forecast_rows.clear()
 
-    forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric&lang=en"
+    forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?q={city}&appid={api_key}&units=metric&lang={lang}"
     try:
         forecast_response = requests.get(forecast_url)
         forecast_response.raise_for_status()
