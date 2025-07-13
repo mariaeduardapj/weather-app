@@ -10,7 +10,17 @@ from io import BytesIO
 load_dotenv()
 
 current_language = {"value": "en"}
-
+lang_alias = {
+    "en": "en",
+    "fr": "fr",
+    "de": "de",
+    "it": "it",
+    "ja": "ja",
+    "kr": "kr",
+    "pt": "pt",
+    "es": "es",
+    "sp": "es"
+}
 translations = {
     "en": {
         "error_api": "Error: API_TOKEN not set in .env file",
@@ -28,6 +38,96 @@ translations = {
             "Friday": "Friday",
             "Saturday": "Saturday",
             "Sunday": "Sunday"
+        }
+    },
+    "fr": {
+        "error_api": "Erreur : API_TOKEN non défini dans le fichier .env",
+        "enter_city": "Entrez la ville",
+        "feels_like": "Ressenti {temp}°C",
+        "humidity": "Humidité: {humidity}%",
+        "min_max": "Min: {min}°C | Max: {max}°C",
+        "not_found": "Ville non trouvée ou erreur API.",
+        "detect_fail": "Impossible de détecter la ville.",
+        "weekdays": {
+            "Monday": "Lundi",
+            "Tuesday": "Mardi",
+            "Wednesday": "Mercredi",
+            "Thursday": "Jeudi",
+            "Friday": "Vendredi",
+            "Saturday": "Samedi",
+            "Sunday": "Dimanche"
+        }
+    },
+    "de": {
+        "error_api": "Fehler: API_TOKEN nicht in der .env-Datei festgelegt",
+        "enter_city": "Stadt eingeben",
+        "feels_like": "fühlt sich an wie {temp}°C",
+        "humidity": "Luftfeuchtigkeit: {humidity}%",
+        "min_max": "Min: {min}°C | Max: {max}°C",
+        "not_found": "Stadt nicht gefunden oder API-Fehler.",
+        "detect_fail": "Stadt konnte nicht erkannt werden.",
+        "weekdays": {
+            "Monday": "Montag",
+            "Tuesday": "Dienstag",
+            "Wednesday": "Mittwoch",
+            "Thursday": "Donnerstag",
+            "Friday": "Freitag",
+            "Saturday": "Samstag",
+            "Sunday": "Sonntag"
+        }
+    },
+    "it": {
+        "error_api": "Errore: API_TOKEN non impostato nel file .env",
+        "enter_city": "Inserisci la città",
+        "feels_like": "Sembra {temp}°C",
+        "humidity": "Umidità: {humidity}%",
+        "min_max": "Min: {min}°C | Max: {max}°C",
+        "not_found": "Città non trovata o errore API.",
+        "detect_fail": "Impossibile rilevare la città.",
+        "weekdays": {
+            "Monday": "Lunedì",
+            "Tuesday": "Martedì",
+            "Wednesday": "Mercoledì",
+            "Thursday": "Giovedì",
+            "Friday": "Venerdì",
+            "Saturday": "Sabato",
+            "Sunday": "Domenica"
+        }
+    },
+    "ja": {
+        "error_api": "エラー: API_TOKEN が .env ファイルに設定されていません",
+        "enter_city": "都市を入力してください",
+        "feels_like": "体感温度: {temp}°C",
+        "humidity": "湿度: {humidity}%",
+        "min_max": "最低: {min}°C | 最高: {max}°C",
+        "not_found": "都市が見つからないか、API エラーです",
+        "detect_fail": "都市を検出できませんでした",
+        "weekdays": {
+            "Monday": "月曜日",
+            "Tuesday": "火曜日",
+            "Wednesday": "水曜日",
+            "Thursday": "木曜日",
+            "Friday": "金曜日",
+            "Saturday": "土曜日",
+            "Sunday": "日曜日"
+        }
+    },
+    "kr": {
+        "error_api": "오류: .env 파일에 API_TOKEN이 설정되지 않았습니다.",
+        "enter_city": "도시를 입력하세요",
+        "feels_like": "체감 온도: {temp}°C",
+        "humidity": "습도: {humidity}%",
+        "min_max": "최소: {min}°C | 최대: {max}°C",
+        "not_found": "도시를 찾을 수 없거나 API 오류가 발생했습니다",
+        "detect_fail": "도시를 감지할 수 없습니다",
+        "weekdays": {
+            "Monday": "월요일",
+            "Tuesday": "화요일",
+            "Wednesday": "수요일",
+            "Thursday": "목요일",
+            "Friday": "금요일",
+            "Saturday": "토요일",
+            "Sunday": "일요일"
         }
     },
     "pt": {
@@ -48,58 +148,22 @@ translations = {
             "Sunday": "Domingo"
         }
     },
-    "sq": {
-        "error_api": "Gabim: API_TOKEN nuk është vendosur në skedarin .env",
-        "enter_city": "Hyni në qytet",
-        "feels_like": "Ndihet si {temp}°C",
-        "humidity": "Lagështia: {humidity}%",
-        "min_max": "Min: {min}°C | Maks: {max}°C",
-        "not_found": "Qyteti nuk u gjet ose ka pasur gabim API-je.",
-        "detect_fail": "Nuk mundi të zbulojë qytetin.",
+    "es": {
+        "error_api": "Error: API_TOKEN no está configurado en el archivo .env",
+        "enter_city": "Introduce la ciudad",
+        "feels_like": "Se siente como {temp}°C",
+        "humidity": "Humedad: {humidity}%",
+        "min_max": "Mín: {min}°C | Máx: {max}°C",
+        "not_found": "Ciudad no encontrada o error de API.",
+        "detect_fail": "No se pudo detectar la ciudad.",
         "weekdays": {
-            "Monday": "E hënë",
-            "Tuesday": "E martë",
-            "Wednesday": "E mërkurë",
-            "Thursday": "E enjte",
-            "Friday": "E premte",
-            "Saturday": "E shtunë",
-            "Sunday": "E diel"
-        }
-    },
-    "af": {
-        "error_api": "Fout: API_TOKEN nie in .env-lêer gestel nie",
-        "enter_city": "Gaan stad in",
-        "feels_like": "Voel soos {temp}°C",
-        "humidity": "Humiditeit: {humidity}%",
-        "min_max": "Min: {min}°C | Maks: {max}°C",
-        "not_found": "Stad nie gevind nie of API-fout.",
-        "detect_fail": "Kon nie stad opspoor nie.",
-        "weekdays": {
-            "Monday": "Maandag",
-            "Tuesday": "Dinsdag",
-            "Wednesday": "Wednesday",
-            "Thursday": "Donderdag",
-            "Friday": "Vrydag",
-            "Saturday": "Saterdag",
-            "Sunday": "Sondag"
-        }
-    },
-    "ar": {
-        "error_api": "خطأ: لم يتم تعيين API_TOKEN في ملف .env",
-        "enter_city": "أدخل المدينة",
-        "feels_like": "يشعر وكأنه {temp}°C",
-        "humidity": "رطوبة: {humidity}%",
-        "min_max": "الحد الأدنى: {min}°C | الأعلى: {max}°C",
-        "not_found": "لم يتم العثور على المدينة أو حدث خطأ في واجهة برمجة التطبيقات.",
-        "detect_fail": "لم يتم التعرف على المدينة.",
-        "weekdays": {
-            "Monday": "الاثنين",
-            "Tuesday": "يوم الثلاثاء",
-            "Wednesday": "الأربعاء",
-            "Thursday": "يوم الخميس",
-            "Friday": "جمعة",
-            "Saturday": "السبت",
-            "Sunday": "الأحد"
+            "Monday": "Lunes",
+            "Tuesday": "Martes",
+            "Wednesday": "Miércoles",
+            "Thursday": "Jueves",
+            "Friday": "Viernes",
+            "Saturday": "Sábado",
+            "Sunday": "Domingo"
         }
     }
 }
@@ -128,9 +192,14 @@ scrollable_container = None
 app = None
 
 def t(key, **kwargs):
-    lang = current_language["value"]
+    lang = lang_alias.get(current_language["value"], "en")
     text = translations[lang].get(key, key)
     return text.format(**kwargs)
+
+def translate_weekday(weekday):
+    lang = lang_alias.get(current_language["value"], "en")
+    return translations[lang]["weekdays"].get(weekday, weekday)
+
 
 def get_city():
     api_token = os.getenv("API_TOKEN")
@@ -181,7 +250,7 @@ def on_history_click(city_name):
     get_weather()
 
 def get_weather():
-    city = city_entry.get().strip() if city_entry else ""
+    city = city_entry.get().strip() if city_entry and city_entry.get() else ""
     if not city:
         city = get_city()
         if city:
@@ -197,7 +266,7 @@ def get_weather():
         if desc_label: desc_label.configure(text=t("error_api"))
         return
 
-    lang = current_language["value"]
+    lang = lang_alias.get(current_language["value"], "en")
     current_weather_url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang={lang}"
     try:
         response = requests.get(current_weather_url)
@@ -206,7 +275,10 @@ def get_weather():
 
         temp = data["main"]["temp"]
         desc = data["weather"][0]["description"]
-        desc_display = desc.capitalize()
+        if current_language["value"] in ["en", "fr", "de", "it", "es", "pt"]:
+           desc_display = desc.capitalize()
+        else:
+           desc_display = desc
         feels = data["main"]["feels_like"]
         temp_min = data["main"]["temp_min"]
         temp_max = data["main"]["temp_max"]
@@ -296,7 +368,8 @@ def toggle_theme():
 
     ctk.set_default_color_theme(current_theme_path["value"])
     rebuild_ui()
-
+    if toggle_btn:
+        toggle_btn.configure(text="🌙" if "pink" in current_theme_path["value"] else "☀️")
 
 def rebuild_ui():
     global city_entry, search_button, weather_gif_label
@@ -336,7 +409,7 @@ def rebuild_ui():
 
     lang_menu = ctk.CTkOptionMenu(
         top_frame,
-        values=["en", "pt", "sq", "af", "ar"],
+        values=["en", "fr", "de", "it", "ja", "kr", "pt", "es"],
         command=change_language,
         width=80
     )
