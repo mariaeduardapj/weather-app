@@ -20,9 +20,15 @@ translations = {
         "min_max": "Min: {min}°C | Max: {max}°C",
         "not_found": "City not found or API error.",
         "detect_fail": "Could not detect city.",
-        "search": "🔍",
-        "dark_mode": "🌙",
-        "light_mode": "☀️"
+        "weekdays": {
+            "Monday": "Monday",
+            "Tuesday": "Tuesday",
+            "Wednesday": "Wednesday",
+            "Thursday": "Thursday",
+            "Friday": "Friday",
+            "Saturday": "Saturday",
+            "Sunday": "Sunday"
+        }
     },
     "pt": {
         "error_api": "Erro: API_TOKEN não configurado no arquivo .env",
@@ -32,11 +38,39 @@ translations = {
         "min_max": "Mín: {min}°C | Máx: {max}°C",
         "not_found": "Cidade não encontrada ou erro na API.",
         "detect_fail": "Não foi possível detectar a cidade.",
-        "search": "🔍",
-        "dark_mode": "🌙",
-        "light_mode": "☀️"
+        "weekdays": {
+            "Monday": "Segunda-feira",
+            "Tuesday": "Terça-feira",
+            "Wednesday": "Quarta-feira",
+            "Thursday": "Quinta-feira",
+            "Friday": "Sexta-feira",
+            "Saturday": "Sábado",
+            "Sunday": "Domingo"
+        }
+    },
+    "sq": {
+        "error_api": "Gabim: API_TOKEN nuk është vendosur në skedarin .env",
+        "enter_city": "Hyni në qytet",
+        "feels_like": "Ndihet si {temp}°C",
+        "humidity": "Lagështia: {humidity}%",
+        "min_max": "Min: {min}°C | Maks: {max}°C",
+        "not_found": "Qyteti nuk u gjet ose ka pasur gabim API-je.",
+        "detect_fail": "Nuk mundi të zbulojë qytetin.",
+        "weekdays": {
+            "Monday": "E hënë",
+            "Tuesday": "E martë",
+            "Wednesday": "E mërkurë",
+            "Thursday": "E enjte",
+            "Friday": "E premte",
+            "Saturday": "E shtunë",
+            "Sunday": "E diel"
+        }
     }
 }
+
+def translate_weekday(weekday):
+    lang = current_language["value"]
+    return translations[lang]["weekdays"].get(weekday, weekday)
 
 current_theme_path = {"value": "themes/pink-theme.json"}
 forecast_rows = []
@@ -199,7 +233,7 @@ def get_weather():
             item = daily_forecasts[date]
             temp_day = item['main']['temp']
             desc_day = item['weather'][0]['description'].capitalize()
-            weekday = date.strftime("%A")
+            weekday = translate_weekday(date.strftime("%A"))
 
             row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
             row_frame.pack(fill="x", padx=30, pady=1)
@@ -266,7 +300,7 @@ def rebuild_ui():
 
     lang_menu = ctk.CTkOptionMenu(
         top_frame,
-        values=["en", "pt"],
+        values=["en", "pt", "sq"],
         command=change_language,
         width=80
     )
@@ -278,10 +312,10 @@ def rebuild_ui():
     city_entry = ctk.CTkEntry(top_frame, placeholder_text=t("enter_city"), font=("Tahoma", 14))
     city_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
 
-    search_button = ctk.CTkButton(top_frame, text=t("search"), command=get_weather)
+    search_button = ctk.CTkButton(top_frame, text="🔍", command=get_weather)
     search_button.grid(row=0, column=1, sticky="ew", padx=(0, 5))
 
-    toggle_btn = ctk.CTkButton(top_frame, text=t("dark_mode") if "pink" in current_theme_path["value"] else t("light_mode"), command=toggle_theme)
+    toggle_btn = ctk.CTkButton(top_frame, text="🌙" if "pink" in current_theme_path["value"] else"☀️", command=toggle_theme)
     toggle_btn.grid(row=0, column=2, sticky="ew")
 
     history_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent", height=30)
