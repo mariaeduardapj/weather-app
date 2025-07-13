@@ -83,6 +83,24 @@ translations = {
             "Saturday": "Saterdag",
             "Sunday": "Sondag"
         }
+    },
+    "ar": {
+        "error_api": "خطأ: لم يتم تعيين API_TOKEN في ملف .env",
+        "enter_city": "أدخل المدينة",
+        "feels_like": "يشعر وكأنه {temp}°C",
+        "humidity": "رطوبة: {humidity}%",
+        "min_max": "الحد الأدنى: {min}°C | الأعلى: {max}°C",
+        "not_found": "لم يتم العثور على المدينة أو حدث خطأ في واجهة برمجة التطبيقات.",
+        "detect_fail": "لم يتم التعرف على المدينة.",
+        "weekdays": {
+            "Monday": "الاثنين",
+            "Tuesday": "يوم الثلاثاء",
+            "Wednesday": "الأربعاء",
+            "Thursday": "يوم الخميس",
+            "Friday": "جمعة",
+            "Saturday": "السبت",
+            "Sunday": "الأحد"
+        }
     }
 }
 
@@ -318,7 +336,7 @@ def rebuild_ui():
 
     lang_menu = ctk.CTkOptionMenu(
         top_frame,
-        values=["en", "pt", "sq", "af"],
+        values=["en", "pt", "sq", "af", "ar"],
         command=change_language,
         width=80
     )
