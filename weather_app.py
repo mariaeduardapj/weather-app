@@ -65,6 +65,24 @@ translations = {
             "Saturday": "E shtunë",
             "Sunday": "E diel"
         }
+    },
+    "af": {
+        "error_api": "Fout: API_TOKEN nie in .env-lêer gestel nie",
+        "enter_city": "Gaan stad in",
+        "feels_like": "Voel soos {temp}°C",
+        "humidity": "Humiditeit: {humidity}%",
+        "min_max": "Min: {min}°C | Maks: {max}°C",
+        "not_found": "Stad nie gevind nie of API-fout.",
+        "detect_fail": "Kon nie stad opspoor nie.",
+        "weekdays": {
+            "Monday": "Maandag",
+            "Tuesday": "Dinsdag",
+            "Wednesday": "Wednesday",
+            "Thursday": "Donderdag",
+            "Friday": "Vrydag",
+            "Saturday": "Saterdag",
+            "Sunday": "Sondag"
+        }
     }
 }
 
@@ -300,7 +318,7 @@ def rebuild_ui():
 
     lang_menu = ctk.CTkOptionMenu(
         top_frame,
-        values=["en", "pt", "sq"],
+        values=["en", "pt", "sq", "af"],
         command=change_language,
         width=80
     )
