@@ -1,11 +1,14 @@
 import customtkinter as ctk
 import requests
 import os
+import matplotlib
 from tkinter import END
 from dotenv import load_dotenv
 from PIL import Image, ImageTk
 from datetime import datetime
 from io import BytesIO
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 load_dotenv()
 
@@ -38,7 +41,10 @@ translations = {
             "Friday": "Friday",
             "Saturday": "Saturday",
             "Sunday": "Sunday"
-        }
+        },
+        "graph_title": "Today's temperature",
+        "graph_xlabel": "Time",
+        "graph_ylabel": "°C"
     },
     "fr": {
         "error_api": "Erreur : API_TOKEN non défini dans le fichier .env",
@@ -56,7 +62,10 @@ translations = {
             "Friday": "Vendredi",
             "Saturday": "Samedi",
             "Sunday": "Dimanche"
-        }
+        },
+        "graph_title": "Température d'aujourd'hui",
+        "graph_xlabel": "Heure",
+        "graph_ylabel": "°C"
     },
     "de": {
         "error_api": "Fehler: API_TOKEN nicht in der .env-Datei festgelegt",
@@ -74,7 +83,10 @@ translations = {
             "Friday": "Freitag",
             "Saturday": "Samstag",
             "Sunday": "Sonntag"
-        }
+        },
+        "graph_title": "Heutige Temperatur",
+        "graph_xlabel": "Uhrzeit",
+        "graph_ylabel": "°C"
     },
     "it": {
         "error_api": "Errore: API_TOKEN non impostato nel file .env",
@@ -92,7 +104,10 @@ translations = {
             "Friday": "Venerdì",
             "Saturday": "Sabato",
             "Sunday": "Domenica"
-        }
+        },
+        "graph_title": "Temperatura di oggi",
+        "graph_xlabel": "Orario",
+        "graph_ylabel": "°C"
     },
     "ja": {
         "error_api": "エラー: API_TOKEN が .env ファイルに設定されていません",
@@ -110,7 +125,11 @@ translations = {
             "Friday": "金曜日",
             "Saturday": "土曜日",
             "Sunday": "日曜日"
-        }
+        },
+        "graph_title": "今日の気温",
+        "graph_xlabel": "時間",
+        "graph_ylabel": "°C"
+
     },
     "kr": {
         "error_api": "오류: .env 파일에 API_TOKEN이 설정되지 않았습니다.",
@@ -128,7 +147,10 @@ translations = {
             "Friday": "금요일",
             "Saturday": "토요일",
             "Sunday": "일요일"
-        }
+        },
+        "graph_title": "오늘의 기온",
+        "graph_xlabel": "시간",
+        "graph_ylabel": "°C"
     },
     "pt": {
         "error_api": "Erro: API_TOKEN não configurado no arquivo .env",
@@ -146,7 +168,10 @@ translations = {
             "Friday": "Sexta-feira",
             "Saturday": "Sábado",
             "Sunday": "Domingo"
-        }
+        },
+        "graph_title": "Temperatura de hoje",
+        "graph_xlabel": "Horário",
+        "graph_ylabel": "°C"
     },
     "es": {
         "error_api": "Error: API_TOKEN no está configurado en el archivo .env",
@@ -164,9 +189,17 @@ translations = {
             "Friday": "Viernes",
             "Saturday": "Sábado",
             "Sunday": "Domingo"
-        }
+        },
+        "graph_title": "Temperatura de hoy",
+        "graph_xlabel": "Hora",
+        "graph_ylabel": "°C"
     }
 }
+
+def t(key, **kwargs):
+    lang = lang_alias.get(current_language["value"], "en")
+    text = translations[lang].get(key, key)
+    return text.format(**kwargs)
 
 def translate_weekday(weekday):
     lang = current_language["value"]
@@ -175,6 +208,7 @@ def translate_weekday(weekday):
 current_theme_path = {"value": "themes/pink-theme.json"}
 forecast_rows = []
 search_history = []
+forecast_chart = None
 city_entry = None
 search_button = None
 weather_gif_label = None
@@ -190,16 +224,6 @@ history_frame = None
 history_labels = []
 scrollable_container = None
 app = None
-
-def t(key, **kwargs):
-    lang = lang_alias.get(current_language["value"], "en")
-    text = translations[lang].get(key, key)
-    return text.format(**kwargs)
-
-def translate_weekday(weekday):
-    lang = lang_alias.get(current_language["value"], "en")
-    return translations[lang]["weekdays"].get(weekday, weekday)
-
 
 def get_city():
     api_token = os.getenv("API_TOKEN")
@@ -317,6 +341,41 @@ def get_weather():
         forecast_response = requests.get(forecast_url)
         forecast_response.raise_for_status()
         forecast_data = forecast_response.json()
+
+        global forecast_chart
+        if forecast_chart:
+            forecast_chart.get_tk_widget().destroy()
+            forecast_chart = None
+
+        def plot_today_temperatures(data):
+            today = datetime.now().date()
+            times = []
+            temps = []
+
+            for item in data["list"][:8]:  # Pega as 8 primeiras previsões
+                dt = datetime.fromisoformat(item["dt_txt"])
+                times.append(dt.strftime("%Hh"))
+                temps.append(item["main"]["temp"])
+
+            if not times:
+                return
+
+            fig = Figure(figsize=(4.2, 2), dpi=100)
+            ax = fig.add_subplot(111)
+            color = "#ff6699" if "pink" in current_theme_path["value"] else "#cccccc"
+            ax.plot(times, temps, marker="o", color=color)
+            ax.set_title(t("graph_title"))
+            ax.set_ylabel(t("graph_ylabel"))
+            ax.set_xlabel(t("graph_xlabel"))
+            ax.grid(True)
+
+            global forecast_chart
+            forecast_chart = FigureCanvasTkAgg(fig, master=forecast_frame)
+            forecast_chart.draw()
+            forecast_chart.get_tk_widget().pack(pady=10)
+    
+        plot_today_temperatures(forecast_data)
+
     except:
         forecast_data = None
 
