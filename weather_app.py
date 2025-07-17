@@ -209,6 +209,7 @@ current_theme_path = {"value": "themes/pink-theme.json"}
 forecast_rows = []
 search_history = []
 forecast_chart = None
+autocomplete_listbox = None
 city_entry = None
 search_button = None
 weather_gif_label = None
@@ -271,6 +272,47 @@ def on_history_click(city_name):
     if city_entry:
         city_entry.delete(0, END)
         city_entry.insert(0, city_name)
+    get_weather()
+
+def on_city_keyrelease(event):
+    global autocomplete_listbox
+    query = city_entry.get().strip()
+    if len(query) < 2:
+        if autocomplete_listbox:
+            autocomplete_listbox.destroy()
+        return
+
+    api_key = os.getenv("API_KEY")
+    lang = lang_alias.get(current_language["value"], "en")
+    url = f"http://api.openweathermap.org/geo/1.0/direct?q={query}&limit=5&appid={api_key}&lang={lang}"
+
+    try:
+        res = requests.get(url)
+        res.raise_for_status()
+        results = res.json()
+    except:
+        results = []
+
+    if autocomplete_listbox:
+        autocomplete_listbox.destroy()
+
+    if results:
+        autocomplete_listbox = ctk.CTkFrame(app, fg_color="#ffffff" if "pink" in current_theme_path["value"] else "#222222", corner_radius=6)
+        autocomplete_listbox.place(x=city_entry.winfo_rootx() - app.winfo_rootx(),
+                                   y=city_entry.winfo_rooty() - app.winfo_rooty() + city_entry.winfo_height())
+
+        for item in results:
+            name = f"{item['name']}, {item.get('state', '')} {item['country']}".strip(', ')
+            btn = ctk.CTkButton(autocomplete_listbox, text=name, font=("Tahoma", 12), width=200,
+                                command=lambda n=name: select_autocomplete(n))
+            btn.pack(padx=5, pady=2)
+
+def select_autocomplete(city_name):
+    global autocomplete_listbox
+    city_entry.delete(0, END)
+    city_entry.insert(0, city_name)
+    if autocomplete_listbox:
+        autocomplete_listbox.destroy()
     get_weather()
 
 def get_weather():
@@ -479,6 +521,9 @@ def rebuild_ui():
 
     city_entry = ctk.CTkEntry(top_frame, placeholder_text=t("enter_city"), font=("Tahoma", 14))
     city_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
+    city_entry = ctk.CTkEntry(top_frame, placeholder_text=t("enter_city"), font=("Tahoma", 14))
+    city_entry.grid(row=0, column=0, sticky="ew", padx=(0, 5))
+    city_entry.bind("<KeyRelease>", on_city_keyrelease)
 
     search_button = ctk.CTkButton(top_frame, text="🔍", command=get_weather)
     search_button.grid(row=0, column=1, sticky="ew", padx=(0, 5))
