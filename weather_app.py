@@ -434,7 +434,7 @@ def get_weather():
             global forecast_chart
             forecast_chart = FigureCanvasTkAgg(fig, master=forecast_frame)
             forecast_chart.draw()
-            forecast_chart.get_tk_widget().pack(pady=10)
+            forecast_chart.get_tk_widget().pack(pady=(10, 20))
     
         plot_today_temperatures(forecast_data)
 
@@ -465,7 +465,7 @@ def get_weather():
             weekday = translate_weekday(date.strftime("%A"))
 
             row_frame = ctk.CTkFrame(forecast_frame, fg_color="transparent")
-            row_frame.pack(fill="x", padx=30, pady=1)
+            row_frame.pack(fill="x", padx=20, pady=5)
 
             label_day = ctk.CTkLabel(row_frame, text=weekday, font=("Tahoma", 12, "bold"), width=90, anchor="w")
             label_day.pack(side="left")
@@ -586,7 +586,8 @@ def rebuild_ui():
     max_min_label.grid(row=5, column=0, sticky="w")
 
     forecast_frame = ctk.CTkFrame(main_content_frame, fg_color="transparent")
-    forecast_frame.grid(row=3, column=0, padx=10, pady=(0, 20), sticky="ew")
+    forecast_frame.grid(row=3, column=0, padx=10, pady=(20, 20), sticky="ew") 
+    forecast_frame.grid_columnconfigure(0, weight=1) 
 
     if search_history:
         update_search_history(search_history[0])
