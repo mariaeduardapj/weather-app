@@ -394,7 +394,7 @@ def get_weather():
             times = []
             temps = []
 
-            for item in data["list"][:8]:  # Pega as 8 primeiras previsões
+            for item in data["list"][:8]: 
                 dt = datetime.fromisoformat(item["dt_txt"])
                 times.append(dt.strftime("%Hh"))
                 temps.append(item["main"]["temp"])
@@ -404,12 +404,32 @@ def get_weather():
 
             fig = Figure(figsize=(4.2, 2), dpi=100)
             ax = fig.add_subplot(111)
-            color = "#ff6699" if "pink" in current_theme_path["value"] else "#cccccc"
-            ax.plot(times, temps, marker="o", color=color)
-            ax.set_title(t("graph_title"))
-            ax.set_ylabel(t("graph_ylabel"))
-            ax.set_xlabel(t("graph_xlabel"))
-            ax.grid(True)
+            
+            if "pink" in current_theme_path["value"]:
+                bg_color = "#ffe6f0"
+                text_color = "#d63384"
+                line_color = "#ff6699"
+                grid_color = "#ff99cc"
+            else:
+                bg_color = "#1e1e1e"
+                text_color = "#dddddd"
+                line_color = "#cccccc"
+                grid_color = "#444444"
+            
+            fig.patch.set_facecolor(bg_color)
+            ax.set_facecolor(bg_color)
+            
+            ax.plot(times, temps, marker="o", color=line_color)
+            ax.set_title(t("graph_title"), color=text_color)
+            ax.set_ylabel(t("graph_ylabel"), color=text_color)
+            ax.set_xlabel(t("graph_xlabel"), color=text_color)
+            
+            ax.tick_params(axis='x', colors=text_color)
+            ax.tick_params(axis='y', colors=text_color)
+            ax.grid(True, color=grid_color, alpha=0.3)
+            
+            for spine in ax.spines.values():
+                spine.set_edgecolor(text_color)
 
             global forecast_chart
             forecast_chart = FigureCanvasTkAgg(fig, master=forecast_frame)
@@ -570,7 +590,8 @@ def rebuild_ui():
 
     if search_history:
         update_search_history(search_history[0])
-
+    
+    get_weather()
 
 
 ctk.set_appearance_mode("light")
