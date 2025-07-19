@@ -71,7 +71,15 @@ weather-app/
 
 ---
 
+## ☀️ Credits
+
+Icon made by [Icons8](https://icons8.com) – [Night icon](https://icons8.com/icon/FuP3MdZs4JF5/night)
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+
 
